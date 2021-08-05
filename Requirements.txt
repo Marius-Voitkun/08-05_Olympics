@@ -1,0 +1,17 @@
+projektas vadinsis Olympics
+duomenų bazė - olympics MsSql arba MySql
+prisijungimas prie DB tvarkingai. t.y su appsettings.json ir tt.
+
+modelis: AthleteModel
+Id
+Name
+Surname
+Country
+
+AthleteDBService.cs
+prijungiam per startup.cs
+
+jame visi reikalingi metodai. pradžioj:
+all, create
+
+views: index, create.
