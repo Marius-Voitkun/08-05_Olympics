@@ -5,13 +5,10 @@ using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Models
 {
-    public class AthleteModel
+    public class CountryModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Surname { get; set; }
-        public int CountryId { get; set; }
-        public CountryModel Country { get; set; }
-        public List<SportModel> SportList { get; set; }
+        public string UNDP { get; set; }
     }
 }

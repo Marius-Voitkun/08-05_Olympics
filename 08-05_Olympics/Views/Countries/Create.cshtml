@@ -1,0 +1,18 @@
+﻿@model CountryModel
+
+<h2>Add a country</h2>
+
+@using (Html.BeginForm("Create", "Countries", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(c => c.Name, "Name of country")
+        @Html.TextBoxFor(c => c.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(c => c.UNDP, "Country code (3 letters)")
+        @Html.TextBoxFor(c => c.UNDP, new { @class = "form-control" })
+    </div>
+    @Html.HiddenFor(c => c.Id)
+    <button type="submit" class="btn btn-primary">Add</button>
+    @Html.ActionLink("Cancel", "Index", "Countries", null, new { @class = "btn btn-secondary" })
+} 

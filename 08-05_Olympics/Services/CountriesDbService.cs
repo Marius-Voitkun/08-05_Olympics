@@ -7,48 +7,47 @@ using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Services
 {
-    public class AthletesDbService
+    public class CountriesDbService
     {
         private readonly SqlConnection _connection;
 
-        public AthletesDbService(SqlConnection connection)
+        public CountriesDbService(SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public List<AthleteModel> GetAthletes()
+        public List<CountryModel> GetCountries()
         {
-            List<AthleteModel> athletes = new();
+            List<CountryModel> countries = new();
 
             _connection.Open();
 
-            using var command = new SqlCommand("SELECT * FROM dbo.Athletes;", _connection);
+            using var command = new SqlCommand("SELECT * FROM dbo.Countries;", _connection);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())
             {
-                AthleteModel athlete = new()
+                CountryModel country = new()
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
-                    Surname = reader.GetString(2),
-                    CountryId = reader.GetInt32(3)
+                    UNDP = reader.GetString(2)
                 };
 
-                athletes.Add(athlete);
+                countries.Add(country);
             }
 
             _connection.Close();
 
-            return athletes;
+            return countries;
         }
 
-        public void AddAthlete(AthleteModel athlete)
+        public void AddCountry(CountryModel country)
         {
             _connection.Open();
 
-            using var command = new SqlCommand($"INSERT INTO dbo.Athletes (Name, Surname, CountryId)" +
-                $"VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryId}');", _connection);
+            using var command = new SqlCommand($"INSERT INTO dbo.Countries (Name, UNDP)" +
+                $"VALUES ('{country.Name}', '{country.UNDP}');", _connection);
             command.ExecuteNonQuery();
 
             _connection.Close();

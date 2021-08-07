@@ -15,3 +15,33 @@ jame visi reikalingi metodai. pradžioj:
 all, create
 
 views: index, create.
+
+======================================
+2
+
+Su Jaunium:
+Sukuriame db tables countries bei sports.
+Sukuriame Modelus CountryModel ir SportModel
+
+CountryModel.cs
+Id
+CountryName
+ISO3
+
+SportModel
+Id
+Name
+TeamActivity (true/false)
+
+Sukuriame atitinkamus views, index, create.
+
+Redaguojame AthleteModel. šaliname lauką Country, įdedame contry id. įdedame sport_id. Sujungiame tvarkingai su foreing keys.
+
+
+
+1. Create DbTables 'Countries' and 'Sports'
+2. Create Foreign key (1 to many relationship) with 'Country' and foreign key with 'Sports' (many to many relationship)
+We will need an extra table 'AthleteSports) with AthleteId and SportsId
+3. Create classes CountryModel.cs and SportModel.cs
+4. Athletes functionality has to be multiplied for Coutries and Sports.
+5. Modify (in Athletes) to use dropdowns rather than free text values.

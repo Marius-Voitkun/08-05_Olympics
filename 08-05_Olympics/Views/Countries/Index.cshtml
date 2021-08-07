@@ -1,0 +1,32 @@
+﻿@model List<CountryModel>
+
+<h2 class="d-inline-block mb-4">Countries</h2>
+
+@Html.ActionLink("Add a country", "Create", "Countries", null, new { @class = "btn btn-primary float-right" })
+
+@if (Model.Count == 0)
+{
+    <p>There are no countries.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="text-center">Id</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">UNDP</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var country in Model)
+            {
+                <tr>
+                    <td class="text-center">@country.Id</td>
+                    <td class="text-center">@country.Name</td>
+                    <td class="text-center">@country.UNDP</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

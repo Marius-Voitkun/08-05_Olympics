@@ -7,48 +7,47 @@ using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Services
 {
-    public class AthletesDbService
+    public class SportsDbService
     {
         private readonly SqlConnection _connection;
 
-        public AthletesDbService(SqlConnection connection)
+        public SportsDbService(SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public List<AthleteModel> GetAthletes()
+        public List<SportModel> GetSports()
         {
-            List<AthleteModel> athletes = new();
+            List<SportModel> sports = new();
 
             _connection.Open();
 
-            using var command = new SqlCommand("SELECT * FROM dbo.Athletes;", _connection);
+            using var command = new SqlCommand("SELECT * FROM dbo.Sports;", _connection);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())
             {
-                AthleteModel athlete = new()
+                SportModel sport = new()
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
-                    Surname = reader.GetString(2),
-                    CountryId = reader.GetInt32(3)
+                    TeamActivity = reader.GetBoolean(2)
                 };
 
-                athletes.Add(athlete);
+                sports.Add(sport);
             }
 
             _connection.Close();
 
-            return athletes;
+            return sports;
         }
 
-        public void AddAthlete(AthleteModel athlete)
+        public void AddSport(SportModel sport)
         {
             _connection.Open();
 
-            using var command = new SqlCommand($"INSERT INTO dbo.Athletes (Name, Surname, CountryId)" +
-                $"VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryId}');", _connection);
+            using var command = new SqlCommand($"INSERT INTO dbo.Sports (Name, TeamActivity)" +
+                $"VALUES ('{sport.Name}', '{sport.TeamActivity}');", _connection);
             command.ExecuteNonQuery();
 
             _connection.Close();

@@ -1,0 +1,32 @@
+﻿@model List<SportModel>
+
+<h2 class="d-inline-block mb-4">List of Sports</h2>
+
+@Html.ActionLink("Add a sport", "Create", "Sports", null, new { @class = "btn btn-primary float-right" })
+
+@if (Model.Count == 0)
+{
+    <p>There are no sports.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="text-center">Id</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">Team Activity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sport in Model)
+            {
+                <tr>
+                    <td class="text-center">@sport.Id</td>
+                    <td class="text-center">@sport.Name</td>
+                    <td class="text-center">@{ var value = sport.TeamActivity ? "Yes" : "No"; }@value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

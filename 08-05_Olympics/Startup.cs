@@ -26,8 +26,10 @@ namespace _08_05_Olympics
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddScoped<AthletesDbService>();
             services.AddTransient<SqlConnection>(_ => new SqlConnection(Configuration["ConnectionStrings:Default"]));
+            services.AddScoped<AthletesDbService>();
+            services.AddScoped<SportsDbService>();
+            services.AddScoped<CountriesDbService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

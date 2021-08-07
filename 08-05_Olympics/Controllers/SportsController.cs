@@ -3,39 +3,38 @@ using _08_05_Olympics.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Controllers
 {
-    public class AthletesController : Controller
+    public class SportsController : Controller
     {
-        private readonly AthletesDbService _dbService;
+        private readonly SportsDbService _dbService;
 
-        public AthletesController(AthletesDbService dbService)
+        public SportsController(SportsDbService dbService)
         {
             _dbService = dbService;
         }
 
         public IActionResult Index()
         {
-            List<AthleteModel> athletes = _dbService.GetAthletes();
+            List<SportModel> sports = _dbService.GetSports();
 
-            return View(athletes);
+            return View(sports);
         }
 
         public IActionResult Create()
         {
-            AthleteModel newAthlete = new();
+            SportModel newSport = new();
 
-            return View(newAthlete);
+            return View(newSport);
         }
 
         [HttpPost]
-        public IActionResult Create(AthleteModel athlete)
+        public IActionResult Create(SportModel sport)
         {
-            _dbService.AddAthlete(athlete);
+            _dbService.AddSport(sport);
 
             return RedirectToAction("Index");
         }
