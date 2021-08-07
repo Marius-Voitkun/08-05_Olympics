@@ -12,6 +12,6 @@ namespace _08_05_Olympics.Models
         public string Surname { get; set; }
         public int CountryId { get; set; }
         public CountryModel Country { get; set; }
-        public List<SportModel> SportList { get; set; }
+        public Dictionary<int, bool> Sports { get; set; } = new();
     }
 }

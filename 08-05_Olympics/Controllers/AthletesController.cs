@@ -1,4 +1,5 @@
 ﻿using _08_05_Olympics.Models;
+using _08_05_Olympics.Models.ViewModels;
 using _08_05_Olympics.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,31 +12,33 @@ namespace _08_05_Olympics.Controllers
 {
     public class AthletesController : Controller
     {
-        private readonly AthletesDbService _dbService;
+        private readonly AthletesIntegratedService _integratedService;
+        private readonly AthletesDbService _athletesDbService;
 
-        public AthletesController(AthletesDbService dbService)
+        public AthletesController(AthletesIntegratedService integratedService, AthletesDbService athletesDbService)
         {
-            _dbService = dbService;
+            _integratedService = integratedService;
+            _athletesDbService = athletesDbService;
         }
 
         public IActionResult Index()
         {
-            List<AthleteModel> athletes = _dbService.GetAthletes();
+            IntegratedViewModel model = _integratedService.GetModelForIndex();
 
-            return View(athletes);
+            return View(model);
         }
 
         public IActionResult Create()
         {
-            AthleteModel newAthlete = new();
+            IntegratedViewModel model = _integratedService.GetModelForCreate();
 
-            return View(newAthlete);
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult Create(AthleteModel athlete)
+        public IActionResult Create(List<AthleteModel> athletes)
         {
-            _dbService.AddAthlete(athlete);
+            _athletesDbService.AddAthlete(athletes[0]);
 
             return RedirectToAction("Index");
         }

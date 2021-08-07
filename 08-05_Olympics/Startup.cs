@@ -30,6 +30,7 @@ namespace _08_05_Olympics
             services.AddScoped<AthletesDbService>();
             services.AddScoped<SportsDbService>();
             services.AddScoped<CountriesDbService>();
+            services.AddScoped<AthletesIntegratedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

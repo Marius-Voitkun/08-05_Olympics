@@ -52,6 +52,54 @@ namespace _08_05_Olympics.Services
             command.ExecuteNonQuery();
 
             _connection.Close();
+
+            int athleteId = GetLastAthleteId();
+            if (athleteId == 0) return;
+
+            AddAthleteSportJunctions(athlete, athleteId);
+        }
+
+        private void AddAthleteSportJunctions(AthleteModel athlete, int id)
+        {
+            var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);
+            if (sportsWhereAthleteAttends.Count == 0)
+                return;
+
+            string queryFragment = "";
+            for (var i = 0; i < sportsWhereAthleteAttends.Count; i++)
+            {
+                queryFragment += $"({id}, {sportsWhereAthleteAttends.ElementAt(i).Key}), ";
+            }
+
+            queryFragment = queryFragment.Remove(queryFragment.Length - 2);
+
+            string query = $"INSERT INTO dbo.AthletesSportsJunction VALUES {queryFragment};";
+
+            _connection.Open();
+
+            using var command = new SqlCommand(query, _connection);
+            command.ExecuteNonQuery();
+
+            _connection.Close();
+        }
+
+        private int GetLastAthleteId()
+        {
+            int id = 0;
+
+            _connection.Open();
+
+            using var command = new SqlCommand($"SELECT TOP 1 Id FROM dbo.Athletes ORDER BY Id DESC;", _connection);
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                id = reader.GetInt32(0);
+            }
+
+            _connection.Close();
+
+            return id;
         }
     }
 }

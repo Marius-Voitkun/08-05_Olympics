@@ -1,22 +1,30 @@
-﻿@model AthleteModel
+﻿@model _08_05_Olympics.Models.ViewModels.IntegratedViewModel
 
 <h2>Add an athlete</h2>
 
 @using (Html.BeginForm("Create", "Athletes", FormMethod.Post))
 {
     <div class="form-group">
-        @Html.LabelFor(a => a.Name)
-        @Html.TextBoxFor(a => a.Name, new { @class = "form-control" })
+        @Html.LabelFor(m => m.Athletes[0].Name)
+        @Html.TextBoxFor(m => m.Athletes[0].Name, new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(a => a.Surname)
-        @Html.TextBoxFor(a => a.Surname, new { @class = "form-control" })
+        @Html.LabelFor(m => m.Athletes[0].Surname)
+        @Html.TextBoxFor(m => m.Athletes[0].Surname, new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(a => a.CountryId)
-        @Html.TextBoxFor(a => a.CountryId, new { @class = "form-control" })
+        @Html.LabelFor(m => m.Athletes[0].CountryId, "Select country")
+        @Html.DropDownListFor(m => m.Athletes[0].CountryId, new SelectList(Model.Countries, "Id", "Name"), "", new { @class = "form-control" })
     </div>
-    @Html.HiddenFor(a => a.Id)
+    <div class="form-group">
+        @for (var i = 0; i < Model.Sports.Count; i++)
+        {
+            var sport = Model.Sports[i];
+            @Html.CheckBoxFor(m => m.Athletes[0].Sports[sport.Id])
+            @Html.LabelFor(m => m.Athletes[0].Sports[sport.Id], sport.Name)
+        }
+    </div>
+    @Html.HiddenFor(m => m.Athletes[0].Id)
     <button type="submit" class="btn btn-primary">Add</button>
     @Html.ActionLink("Cancel", "Index", "Athletes", null, new { @class = "btn btn-secondary" })
 } 
