@@ -42,5 +42,20 @@ namespace _08_05_Olympics.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Edit(int id)
+        {
+            IntegratedViewModel model = _integratedService.GetModelForEdit(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(List<AthleteModel> athletes)
+        {
+            //_athletesDbService.AddAthlete(athletes[0]);
+
+            return RedirectToAction("Index");
+        }
     }
 }

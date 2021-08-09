@@ -57,5 +57,30 @@ namespace _08_05_Olympics.Services
 
             return model;
         }
+
+        public IntegratedViewModel GetModelForEdit(int athleteId)
+        {
+            IntegratedViewModel model = new();
+
+            List<AthleteModel> athletesFromDb = _athletesDbService.GetAthletes();
+            AthleteModel athleteForEditing = athletesFromDb.SingleOrDefault(a => a.Id == athleteId);
+
+            model.Athletes = new List<AthleteModel> { athleteForEditing };
+
+            model.Countries = _countriesDbService.GetCountries();
+            model.Sports = _sportsDbService.GetSports();
+
+            List<int> sportsIds = _athletesDbService.GetSportsIdsForAthlete(athleteId);
+
+            foreach (var sport in model.Sports)
+            {
+                if (sportsIds.Contains(sport.Id))
+                    athleteForEditing.Sports.Add(sport.Id, true);
+                else
+                    athleteForEditing.Sports.Add(sport.Id, false);
+            }
+
+            return model;
+        }
     }
 }

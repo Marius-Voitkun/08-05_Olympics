@@ -1,11 +1,11 @@
 ﻿@model _08_05_Olympics.Models.ViewModels.IntegratedViewModel
 @{
-    ViewData["Title"] = "Add an Athlete";
+    ViewData["Title"] = "Edit Athlete Data";
 }
 
-<h2>Add an athlete</h2>
+<h2>Edit athlete data</h2>
 
-@using (Html.BeginForm("Create", "Athletes", FormMethod.Post))
+@using (Html.BeginForm("Edit", "Athletes", FormMethod.Post))
 {
     <div class="form-group">
         @Html.LabelFor(m => m.Athletes[0].Name)
@@ -30,6 +30,6 @@
         }
     </div>
     @Html.HiddenFor(m => m.Athletes[0].Id)
-    <button type="submit" class="btn btn-primary">Add</button>
+    <button type="submit" class="btn btn-primary">Save changes</button>
     @Html.ActionLink("Cancel", "Index", "Athletes", null, new { @class = "btn btn-secondary" })
 } 

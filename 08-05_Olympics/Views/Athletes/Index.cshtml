@@ -1,4 +1,7 @@
 ﻿@model _08_05_Olympics.Models.ViewModels.IntegratedViewModel
+@{
+    ViewData["Title"] = "Athletes";
+}
 
 <h2 class="d-inline-block mb-4">Athletes</h2>
 
@@ -23,9 +26,9 @@ else
             @foreach (var athlete in Model.Athletes)
             {
                 <tr>
-                    <td class="text-center">@athlete.Id</td>
-                    <td class="text-center">@athlete.Name</td>
-                    <td class="text-center">@athlete.Surname</td>
+                    <td class="text-center">@Html.ActionLink($"{athlete.Id}", "Edit", "Athletes", new { id = athlete.Id }, null)</td>
+                    <td class="text-center">@Html.ActionLink(athlete.Name, "Edit", "Athletes", new { id = athlete.Id }, null)</td>
+                    <td class="text-center">@Html.ActionLink(athlete.Surname, "Edit", "Athletes", new { id = athlete.Id }, null)</td>
                     <td class="text-center">@athlete.Country.Name</td>
                 </tr>
             }

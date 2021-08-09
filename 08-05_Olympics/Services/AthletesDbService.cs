@@ -59,6 +59,24 @@ namespace _08_05_Olympics.Services
             AddAthleteSportJunctions(athlete, athleteId);
         }
 
+        public void UpdateAthlete(AthleteModel athlete)
+        {
+            string query = $"UPDATE dbo.Athletes " +
+                           $"SET Name = {athlete.Name}," +
+                               $"Surname = {athlete.Surname}," +
+                               $"CountryId = {athlete.CountryId}" +
+                           $"WHERE Id = {athlete.Id};";
+
+            _connection.Open();
+
+            using var command = new SqlCommand(query, _connection);
+            command.ExecuteNonQuery();
+
+            _connection.Close();
+
+            UpdateAthleteSportJunctions(athlete, athlete.Id);
+        }
+
         private void AddAthleteSportJunctions(AthleteModel athlete, int id)
         {
             var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);
@@ -83,6 +101,34 @@ namespace _08_05_Olympics.Services
             _connection.Close();
         }
 
+        //private void UpdateAthleteSportJunctions(AthleteModel athlete, int id)
+        //{
+        //    var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);
+        //    if (sportsWhereAthleteAttends.Count == 0)
+        //        return;
+
+        //    string queryFragment = "";
+        //    for (var i = 0; i < sportsWhereAthleteAttends.Count; i++)
+        //    {
+        //        queryFragment += $"({id}, {sportsWhereAthleteAttends.ElementAt(i).Key}), ";
+        //    }
+
+        //    queryFragment = queryFragment.Remove(queryFragment.Length - 2);
+
+        //    string query = $"UPDATE dbo.AthletesSportsJunction " +
+        //                   $"SET Name = {athlete.Name}," +
+        //                       $"Surname = {athlete.Surname}," +
+        //                       $"CountryId = {athlete.CountryId}" +
+        //                   $"WHERE Id = {athlete.Id};";
+
+        //    _connection.Open();
+
+        //    using var command = new SqlCommand(query, _connection);
+        //    command.ExecuteNonQuery();
+
+        //    _connection.Close();
+        //}
+
         private int GetLastAthleteId()
         {
             int id = 0;
@@ -100,6 +146,27 @@ namespace _08_05_Olympics.Services
             _connection.Close();
 
             return id;
+        }
+
+        public List<int> GetSportsIdsForAthlete(int athleteId)
+        {
+            List<int> sportIds = new();
+
+            string query = $"SELECT SportId FROM dbo.AthletesSportsJunction WHERE AthleteId = ${athleteId};";
+
+            _connection.Open();
+
+            using var command = new SqlCommand(query, _connection);
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                sportIds.Add(reader.GetInt32(0));
+            }
+
+            _connection.Close();
+
+            return sportIds;
         }
     }
 }
