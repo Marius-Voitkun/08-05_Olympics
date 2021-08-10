@@ -45,27 +45,8 @@ namespace _08_05_Olympics.Services
 
         public void AddAthlete(AthleteModel athlete)
         {
-            _connection.Open();
-
-            using var command = new SqlCommand($"INSERT INTO dbo.Athletes (Name, Surname, CountryId)" +
-                $"VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryId}');", _connection);
-            command.ExecuteNonQuery();
-
-            _connection.Close();
-
-            int athleteId = GetLastAthleteId();
-            if (athleteId == 0) return;
-
-            AddAthleteSportJunctions(athlete, athleteId);
-        }
-
-        public void UpdateAthlete(AthleteModel athlete)
-        {
-            string query = $"UPDATE dbo.Athletes " +
-                           $"SET Name = {athlete.Name}," +
-                               $"Surname = {athlete.Surname}," +
-                               $"CountryId = {athlete.CountryId}" +
-                           $"WHERE Id = {athlete.Id};";
+            string query = @$"INSERT INTO dbo.Athletes (Name, Surname, CountryId)
+                              VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryId}');";
 
             _connection.Open();
 
@@ -74,10 +55,32 @@ namespace _08_05_Olympics.Services
 
             _connection.Close();
 
-            UpdateAthleteSportJunctions(athlete, athlete.Id);
+            athlete.Id = GetLastAthleteId();
+            if (athlete.Id == 0) return;
+
+            AddAthleteSportJunctions(athlete);
         }
 
-        private void AddAthleteSportJunctions(AthleteModel athlete, int id)
+        public void UpdateAthlete(AthleteModel athlete)
+        {
+            string query = @$"UPDATE dbo.Athletes
+                              SET Name = '{athlete.Name}',
+                                  Surname = '{athlete.Surname}',
+                                  CountryId = {athlete.CountryId}
+                              WHERE Id = {athlete.Id};";
+
+            _connection.Open();
+
+            using var command = new SqlCommand(query, _connection);
+            command.ExecuteNonQuery();
+
+            _connection.Close();
+
+            DeleteAthleteSportJunctions(athlete.Id);
+            AddAthleteSportJunctions(athlete);
+        }
+
+        private void AddAthleteSportJunctions(AthleteModel athlete)
         {
             var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);
             if (sportsWhereAthleteAttends.Count == 0)
@@ -86,7 +89,7 @@ namespace _08_05_Olympics.Services
             string queryFragment = "";
             for (var i = 0; i < sportsWhereAthleteAttends.Count; i++)
             {
-                queryFragment += $"({id}, {sportsWhereAthleteAttends.ElementAt(i).Key}), ";
+                queryFragment += $"({athlete.Id}, {sportsWhereAthleteAttends.ElementAt(i).Key}), ";
             }
 
             queryFragment = queryFragment.Remove(queryFragment.Length - 2);
@@ -101,33 +104,17 @@ namespace _08_05_Olympics.Services
             _connection.Close();
         }
 
-        //private void UpdateAthleteSportJunctions(AthleteModel athlete, int id)
-        //{
-        //    var sportsWhereAthleteAttends = athlete.Sports.Where(s => s.Value == true).ToDictionary(s => s.Key, s => s.Value);
-        //    if (sportsWhereAthleteAttends.Count == 0)
-        //        return;
+        private void DeleteAthleteSportJunctions(int athleteId)
+        {
+            string query = $"DELETE FROM dbo.AthletesSportsJunction WHERE AthleteId = {athleteId};";
 
-        //    string queryFragment = "";
-        //    for (var i = 0; i < sportsWhereAthleteAttends.Count; i++)
-        //    {
-        //        queryFragment += $"({id}, {sportsWhereAthleteAttends.ElementAt(i).Key}), ";
-        //    }
+            _connection.Open();
 
-        //    queryFragment = queryFragment.Remove(queryFragment.Length - 2);
+            using var command = new SqlCommand(query, _connection);
+            command.ExecuteNonQuery();
 
-        //    string query = $"UPDATE dbo.AthletesSportsJunction " +
-        //                   $"SET Name = {athlete.Name}," +
-        //                       $"Surname = {athlete.Surname}," +
-        //                       $"CountryId = {athlete.CountryId}" +
-        //                   $"WHERE Id = {athlete.Id};";
-
-        //    _connection.Open();
-
-        //    using var command = new SqlCommand(query, _connection);
-        //    command.ExecuteNonQuery();
-
-        //    _connection.Close();
-        //}
+            _connection.Close();
+        }
 
         private int GetLastAthleteId()
         {

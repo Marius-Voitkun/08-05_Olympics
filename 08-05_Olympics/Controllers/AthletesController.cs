@@ -53,9 +53,14 @@ namespace _08_05_Olympics.Controllers
         [HttpPost]
         public IActionResult Edit(List<AthleteModel> athletes)
         {
-            //_athletesDbService.AddAthlete(athletes[0]);
+            _athletesDbService.UpdateAthlete(athletes[0]);
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            return View();
         }
     }
 }
