@@ -44,10 +44,34 @@ namespace _08_05_Olympics.Services
 
         public void AddCountry(CountryModel country)
         {
+            string query = @$"INSERT INTO dbo.Countries (Name, UNDP)
+                              VALUES ('{country.Name}', '{country.UNDP}');";
+
+            ExecuteSqlQuery(query);
+        }
+
+        public void UpdateCountry(CountryModel country)
+        {
+            string query = $@"UPDATE dbo.Countries
+                              SET Name = '{country.Name}', UNDP = '{country.UNDP}'
+                              WHERE Id = '{country.Id}';";
+
+            ExecuteSqlQuery(query);
+        }
+
+        public void DeleteCountry(int id)
+        {
+            string query = $@"DELETE FROM dbo.Countries
+                              WHERE Id = '{id}';";
+
+            ExecuteSqlQuery(query);
+        }
+
+        private void ExecuteSqlQuery(string query)
+        {
             _connection.Open();
 
-            using var command = new SqlCommand($"INSERT INTO dbo.Countries (Name, UNDP)" +
-                $"VALUES ('{country.Name}', '{country.UNDP}');", _connection);
+            using var command = new SqlCommand(query, _connection);
             command.ExecuteNonQuery();
 
             _connection.Close();

@@ -1,0 +1,19 @@
+Andriaus SQL query to get Id right after inserting a new athlete:
+
+public int Create(AthleteModel athlete)
+{
+_connection.Open();
+
+ int athleteId = 0;
+
+ string insertAndgetIdString = $"INSERT INTO dbo.Athletes (Name, Surname, CountryCode) VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryCode}') SELECT SCOPE_IDENTITY(); "; ;
+SqlCommand command = new SqlCommand(insertAndgetIdString, _connection);
+using var reader = command.ExecuteReader();
+while (reader.Read())
+{
+athleteId = Convert.ToInt32(reader.GetDecimal(0));
+}
+
+ _connection.Close();
+return athleteId;
+}

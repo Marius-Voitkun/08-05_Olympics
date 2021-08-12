@@ -38,5 +38,30 @@ namespace _08_05_Olympics.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult Edit(int id)
+        {
+            CountryModel country = _dbService.GetCountries().SingleOrDefault(c => c.Id == id);
+
+            if (country == null)
+                return NotFound();
+
+            return View(country);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(CountryModel country)
+        {
+            _dbService.UpdateCountry(country);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            _dbService.DeleteCountry(id);
+
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -60,7 +60,9 @@ namespace _08_05_Olympics.Controllers
 
         public IActionResult Delete(int id)
         {
-            return View();
+            _athletesDbService.DeleteAthlete(id);
+
+            return RedirectToAction("Index");
         }
     }
 }

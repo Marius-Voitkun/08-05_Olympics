@@ -1,9 +1,7 @@
 ﻿using _08_05_Olympics.Models;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Services
 {
@@ -48,14 +46,9 @@ namespace _08_05_Olympics.Services
             string query = @$"INSERT INTO dbo.Athletes (Name, Surname, CountryId)
                               VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryId}');";
 
-            _connection.Open();
+            ExecuteSqlQuery(query);
 
-            using var command = new SqlCommand(query, _connection);
-            command.ExecuteNonQuery();
-
-            _connection.Close();
-
-            athlete.Id = GetLastAthleteId();
+            athlete.Id = GetInsertedAthleteId(athlete);
             if (athlete.Id == 0) return;
 
             AddAthleteSportJunctions(athlete);
@@ -69,15 +62,19 @@ namespace _08_05_Olympics.Services
                                   CountryId = {athlete.CountryId}
                               WHERE Id = {athlete.Id};";
 
-            _connection.Open();
-
-            using var command = new SqlCommand(query, _connection);
-            command.ExecuteNonQuery();
-
-            _connection.Close();
+            ExecuteSqlQuery(query);
 
             DeleteAthleteSportJunctions(athlete.Id);
             AddAthleteSportJunctions(athlete);
+        }
+
+        public void DeleteAthlete(int id)
+        {
+            DeleteAthleteSportJunctions(id);
+
+            string query = $"DELETE FROM dbo.Athletes WHERE Id = {id};";
+
+            ExecuteSqlQuery(query);
         }
 
         private void AddAthleteSportJunctions(AthleteModel athlete)
@@ -96,33 +93,27 @@ namespace _08_05_Olympics.Services
 
             string query = $"INSERT INTO dbo.AthletesSportsJunction VALUES {queryFragment};";
 
-            _connection.Open();
-
-            using var command = new SqlCommand(query, _connection);
-            command.ExecuteNonQuery();
-
-            _connection.Close();
+            ExecuteSqlQuery(query);
         }
 
         private void DeleteAthleteSportJunctions(int athleteId)
         {
             string query = $"DELETE FROM dbo.AthletesSportsJunction WHERE AthleteId = {athleteId};";
 
+            ExecuteSqlQuery(query);
+        }
+
+        private int GetInsertedAthleteId(AthleteModel newAthlete)
+        {
+            int id = 0;
+            string query = @$"SELECT TOP 1 Id 
+                              FROM dbo.Athletes
+                              WHERE Name = '{newAthlete.Name}' AND Surname = '{newAthlete.Surname}'
+                              ORDER BY Id DESC;";
+
             _connection.Open();
 
             using var command = new SqlCommand(query, _connection);
-            command.ExecuteNonQuery();
-
-            _connection.Close();
-        }
-
-        private int GetLastAthleteId()
-        {
-            int id = 0;
-
-            _connection.Open();
-
-            using var command = new SqlCommand($"SELECT TOP 1 Id FROM dbo.Athletes ORDER BY Id DESC;", _connection);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())
@@ -154,6 +145,16 @@ namespace _08_05_Olympics.Services
             _connection.Close();
 
             return sportIds;
+        }
+
+        private void ExecuteSqlQuery(string query)
+        {
+            _connection.Open();
+
+            using var command = new SqlCommand(query, _connection);
+            command.ExecuteNonQuery();
+
+            _connection.Close();
         }
     }
 }

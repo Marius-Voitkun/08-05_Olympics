@@ -16,24 +16,33 @@ else
     <table id="athletes" class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="text-center">Id</th>
-                <th class="text-center">Name</th>
-                <th class="text-center">Surname</th>
-                <th class="text-center">Country</th>
-                <th class="text-center"></th>
+                <th class="text-center align-middle">Id</th>
+                <th class="text-center align-middle">Name</th>
+                <th class="text-center align-middle">Surname</th>
+                <th class="text-center align-middle">Country</th>
+                <th class="text-center align-middle">Sports</th>
+                <th class="text-center align-middle"></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var athlete in Model.Athletes)
             {
             <tr id="tr-@athlete.Id">
-                <td class="text-center">@Html.ActionLink($"{athlete.Id}", "Edit", "Athletes", new { id = athlete.Id })</td>
-                <td class="text-center">@Html.ActionLink(athlete.Name, "Edit", "Athletes", new { id = athlete.Id })</td>
-                <td class="text-center">@Html.ActionLink(athlete.Surname, "Edit", "Athletes", new { id = athlete.Id })</td>
-                <td class="text-center">@athlete.Country.Name</td>
-                @*<td class="text-center">@Html.ActionLink("Delete", "Delete", "Athletes", new { id = athlete.Id }, new { @class = "js-delete" })</td>*@
-                <td class="text-center">
-                    <button id="delete-@athlete.Id" class="fake-link js-delete" data-athlete-id="@athlete.Id">Delete</button>
+                <td class="text-center align-middle">@Html.ActionLink($"{athlete.Id}", "Edit", "Athletes", new { id = athlete.Id })</td>
+                <td class="text-center align-middle">@Html.ActionLink(athlete.Name, "Edit", "Athletes", new { id = athlete.Id })</td>
+                <td class="text-center align-middle">@Html.ActionLink(athlete.Surname, "Edit", "Athletes", new { id = athlete.Id })</td>
+                <td class="text-center align-middle">@athlete.Country.Name</td>
+                <td class="align-middle">
+                    <ul class="m-0">
+                        @for (int i = 0; i < athlete.Sports.Count; i++)
+                        {
+                            int sportId = athlete.Sports.ElementAt(i).Key;
+                            <li>@Model.Sports.Single(s => s.Id == sportId).Name</li>
+                        }
+                    </ul>
+                </td>
+                <td class="text-center align-middle">
+                    <button id="delete-@athlete.Id" class="fake-link js-delete">Delete</button>
                 </td>
             </tr>
             }

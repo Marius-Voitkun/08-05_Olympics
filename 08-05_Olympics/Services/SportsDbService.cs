@@ -44,10 +44,17 @@ namespace _08_05_Olympics.Services
 
         public void AddSport(SportModel sport)
         {
+            string query = @$"INSERT INTO dbo.Sports (Name, TeamActivity)
+                              VALUES ('{sport.Name}', '{sport.TeamActivity}');";
+
+            ExecuteSqlQuery(query);
+        }
+
+        private void ExecuteSqlQuery(string query)
+        {
             _connection.Open();
 
-            using var command = new SqlCommand($"INSERT INTO dbo.Sports (Name, TeamActivity)" +
-                $"VALUES ('{sport.Name}', '{sport.TeamActivity}');", _connection);
+            using var command = new SqlCommand(query, _connection);
             command.ExecuteNonQuery();
 
             _connection.Close();

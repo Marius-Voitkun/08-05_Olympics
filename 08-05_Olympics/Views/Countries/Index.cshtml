@@ -26,7 +26,7 @@ else
             {
                 <tr>
                     <td class="text-center">@country.Id</td>
-                    <td class="text-center">@country.Name</td>
+                    <td class="text-center">@Html.ActionLink($"{country.Name}", "Edit", "Countries", new { id = country.Id })</td>
                     <td class="text-center">@country.UNDP</td>
                 </tr>
             }
