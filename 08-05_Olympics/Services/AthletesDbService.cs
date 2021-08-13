@@ -44,11 +44,21 @@ namespace _08_05_Olympics.Services
         public void AddAthlete(AthleteModel athlete)
         {
             string query = @$"INSERT INTO dbo.Athletes (Name, Surname, CountryId)
-                              VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryId}');";
+                              VALUES ('{athlete.Name}', '{athlete.Surname}', '{athlete.CountryId}');
+                              SELECT CAST(SCOPE_IDENTITY() AS INT);";
+            
+            _connection.Open();
 
-            ExecuteSqlQuery(query);
+            using var command = new SqlCommand(query, _connection);
+            using var reader = command.ExecuteReader();
 
-            athlete.Id = GetInsertedAthleteId(athlete);
+            while (reader.Read())
+            {
+                athlete.Id = reader.GetInt32(0);
+            }
+
+            _connection.Close();
+
             if (athlete.Id == 0) return;
 
             AddAthleteSportJunctions(athlete);
@@ -101,29 +111,6 @@ namespace _08_05_Olympics.Services
             string query = $"DELETE FROM dbo.AthletesSportsJunction WHERE AthleteId = {athleteId};";
 
             ExecuteSqlQuery(query);
-        }
-
-        private int GetInsertedAthleteId(AthleteModel newAthlete)
-        {
-            int id = 0;
-            string query = @$"SELECT TOP 1 Id 
-                              FROM dbo.Athletes
-                              WHERE Name = '{newAthlete.Name}' AND Surname = '{newAthlete.Surname}'
-                              ORDER BY Id DESC;";
-
-            _connection.Open();
-
-            using var command = new SqlCommand(query, _connection);
-            using var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                id = reader.GetInt32(0);
-            }
-
-            _connection.Close();
-
-            return id;
         }
 
         public List<int> GetSportsIdsForAthlete(int athleteId)

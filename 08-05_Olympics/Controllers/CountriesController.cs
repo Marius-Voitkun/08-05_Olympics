@@ -1,10 +1,8 @@
 ﻿using _08_05_Olympics.Models;
 using _08_05_Olympics.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Controllers
 {
@@ -17,9 +15,11 @@ namespace _08_05_Olympics.Controllers
             _dbService = dbService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string message = "")
         {
             List<CountryModel> countries = _dbService.GetCountries();
+
+            ViewData["Message"] = message;
 
             return View(countries);
         }
@@ -59,9 +59,19 @@ namespace _08_05_Olympics.Controllers
 
         public IActionResult Delete(int id)
         {
-            _dbService.DeleteCountry(id);
+            if (!_dbService.DeleteCountry(id))
+                return RedirectToAction("AfterDelete", "Countries", new { message = "The country could not be deleted." });
 
-            return RedirectToAction("Index");
+            return RedirectToAction("AfterDelete");
+        }
+
+        public IActionResult AfterDelete(string message = "")
+        {
+            List<CountryModel> countries = _dbService.GetCountries();
+
+            ViewData["Message"] = message;
+
+            return View("Create");
         }
     }
 }

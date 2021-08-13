@@ -59,12 +59,21 @@ namespace _08_05_Olympics.Services
             ExecuteSqlQuery(query);
         }
 
-        public void DeleteCountry(int id)
+        public bool DeleteCountry(int id)
         {
             string query = $@"DELETE FROM dbo.Countries
                               WHERE Id = '{id}';";
 
-            ExecuteSqlQuery(query);
+            try
+            {
+                ExecuteSqlQuery(query);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void ExecuteSqlQuery(string query)
