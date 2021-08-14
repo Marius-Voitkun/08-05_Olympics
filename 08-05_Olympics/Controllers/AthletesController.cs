@@ -2,11 +2,7 @@
 using _08_05_Olympics.Models.ViewModels;
 using _08_05_Olympics.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace _08_05_Olympics.Controllers
 {
@@ -23,9 +19,16 @@ namespace _08_05_Olympics.Controllers
 
         public IActionResult Index()
         {
-            IntegratedViewModel model = _integratedService.GetModelForIndex();
+            IntegratedViewModel model = _integratedService.GetModelForIndex(new SortFilterModel());
 
             return View(model);
+        }
+
+        public IActionResult SortedFilteredIndex(IntegratedViewModel model)
+        {
+            IntegratedViewModel sortedFilteredModel = _integratedService.GetModelForIndex(model.SortFilter);
+
+            return View("Index", sortedFilteredModel);
         }
 
         public IActionResult Create()

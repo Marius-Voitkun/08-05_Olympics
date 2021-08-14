@@ -14,13 +14,40 @@ namespace _08_05_Olympics.Services
             _connection = connection;
         }
 
-        public List<AthleteModel> GetAthletes()
+        public List<AthleteModel> GetAthletes(SortFilterModel sortFilterModel)
         {
             List<AthleteModel> athletes = new();
 
+            string teamActivityRange = GetTeamActivityRangeForQuery(sortFilterModel);
+
+            string queryFragmentForFilteringBySport = sortFilterModel.FilterBySport != null 
+                                                        ? $"AND s.Name = '{sortFilterModel.FilterBySport}'" 
+                                                        : "";
+
+            string queryFragmentForFilteringByCountry = sortFilterModel.FilterByCountry != null
+                                                        ? $"c.Name = '{sortFilterModel.FilterByCountry}' AND"
+                                                        : "";
+
+            string queryFragmentForSorting = sortFilterModel.SortBy != null
+                                                        ? $"ORDER BY {sortFilterModel.SortBy} "
+                                                        : "";
+
+            string query = @$"
+SELECT a.Id, a.Name, a.Surname, a.CountryId
+FROM dbo.Athletes a
+JOIN dbo.Countries c ON a.CountryId = c.Id
+WHERE {queryFragmentForFilteringByCountry} a.Id IN (
+	    SELECT AthleteId 
+	    FROM dbo.AthletesSportsJunction asj
+	    JOIN dbo.Sports s ON asj.SportId = s.Id
+	    WHERE s.TeamActivity IN {teamActivityRange} {queryFragmentForFilteringBySport}
+	    )
+{queryFragmentForSorting}";
+
+
             _connection.Open();
 
-            using var command = new SqlCommand("SELECT * FROM dbo.Athletes;", _connection);
+            using var command = new SqlCommand(query, _connection);
             using var reader = command.ExecuteReader();
 
             while (reader.Read())
@@ -39,6 +66,17 @@ namespace _08_05_Olympics.Services
             _connection.Close();
 
             return athletes;
+        }
+
+        private string GetTeamActivityRangeForQuery(SortFilterModel model)
+        {
+            if (model.FilterByTeamActivity == 1)
+                return "(1)";
+
+            if (model.FilterByTeamActivity == 2)
+                return "(0)";
+
+            return "(0, 1)";
         }
 
         public void AddAthlete(AthleteModel athlete)

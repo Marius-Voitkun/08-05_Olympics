@@ -26,19 +26,20 @@ namespace _08_05_Olympics.Services
             _sportsDbService = sportsDbService;
         }
 
-        public IntegratedViewModel GetModelForIndex()
+        public IntegratedViewModel GetModelForIndex(SortFilterModel sortFilterModel)
         {
             IntegratedViewModel model = new();
-            model.Athletes = _athletesDbService.GetAthletes();
+            model.Athletes = _athletesDbService.GetAthletes(sortFilterModel);
             model.Countries = _countriesDbService.GetCountries();
             model.Sports = _sportsDbService.GetSports();
+            model.SortFilter = new();
 
             foreach (var athlete in model.Athletes)
             {
                 athlete.Country = model.Countries.SingleOrDefault(c => c.Id == athlete.CountryId);
 
                 List<int> sportsIds = _athletesDbService.GetSportsIdsForAthlete(athlete.Id);
-                
+
                 foreach (int sportId in sportsIds)
                 {
                     athlete.Sports.Add(sportId, true);
@@ -70,7 +71,7 @@ namespace _08_05_Olympics.Services
         {
             IntegratedViewModel model = new();
 
-            List<AthleteModel> athletesFromDb = _athletesDbService.GetAthletes();
+            List<AthleteModel> athletesFromDb = _athletesDbService.GetAthletes(new SortFilterModel());
             AthleteModel athleteForEditing = athletesFromDb.SingleOrDefault(a => a.Id == athleteId);
 
             model.Athletes = new List<AthleteModel> { athleteForEditing };
