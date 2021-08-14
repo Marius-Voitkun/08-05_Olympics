@@ -38,7 +38,7 @@ else
     </table>
 }
 
-@if (ViewData["Message"] != "")
+@if ((string)ViewData["Message"] != "")
 {
     <script>
         alert("@ViewData["Message"]");

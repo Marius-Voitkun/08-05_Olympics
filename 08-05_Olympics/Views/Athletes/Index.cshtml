@@ -1,11 +1,48 @@
 ﻿@model _08_05_Olympics.Models.ViewModels.IntegratedViewModel
 @{
     ViewData["Title"] = "Athletes";
+
+    string filterCriterion = Model.SortFilter.FilterBy;
+    List<string> filteringValues = new();
+
+    switch (filterCriterion)
+    {
+        case "Name":
+            filteringValues = Model.Athletes.Select(a => a.Name).ToList();
+            break;
+        case "Surname":
+            filteringValues = Model.Athletes.Select(a => a.Surname).ToList();
+            break;
+        case "Country":
+            filteringValues = Model.Countries.Select(c => c.Name).ToList();
+            break;
+        case "Sport":
+            filteringValues = Model.Sports.Select(s => s.Name).ToList();
+            break;
+        case "Sport: Team Activity":
+            filteringValues = new() { "Yes", "No" };
+            break;
+    }
 }
 
 <h2 class="d-inline-block mb-4">Athletes</h2>
 
 @Html.ActionLink("Add an athlete", "Create", "Athletes", null, new { @class = "btn btn-primary float-right" })
+
+@using (Html.BeginForm("Index", "Athletes"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.SortFilter.SortBy, "Sort by: ")
+        @Html.DropDownListFor(m => m.SortFilter.SortBy, new SelectList(Model.SortFilter.Properties), "", new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.SortFilter.FilterBy, "Filter by: ")
+        @Html.DropDownListFor(m => m.SortFilter.FilterBy, new SelectList(Model.SortFilter.Properties), "", new { @class = "form-control" })
+        @*@Html.DropDownListFor(m => m.SortFilter.FilteringValue, new SelectList(filteringValues), "", new { @class = "form-control" })*@
+        @Html.TextBoxFor(m => m.SortFilter.FilteringValue, new { @class = "form-control", placeholder = "Enter filtering value" })
+    </div>
+    <button type="submit" class="btn btn-primary">Sort and filter</button>
+}
 
 @if (Model.Athletes.Count == 0)
 {
@@ -27,24 +64,24 @@ else
         <tbody>
             @foreach (var athlete in Model.Athletes)
             {
-            <tr id="tr-@athlete.Id">
-                <td class="text-center align-middle">@Html.ActionLink($"{athlete.Id}", "Edit", "Athletes", new { id = athlete.Id })</td>
-                <td class="text-center align-middle">@Html.ActionLink(athlete.Name, "Edit", "Athletes", new { id = athlete.Id })</td>
-                <td class="text-center align-middle">@Html.ActionLink(athlete.Surname, "Edit", "Athletes", new { id = athlete.Id })</td>
-                <td class="text-center align-middle">@athlete.Country.Name</td>
-                <td class="align-middle">
-                    <ul class="m-0">
-                        @for (int i = 0; i < athlete.Sports.Count; i++)
-                        {
-                            int sportId = athlete.Sports.ElementAt(i).Key;
-                            <li>@Model.Sports.Single(s => s.Id == sportId).Name</li>
-                        }
-                    </ul>
-                </td>
-                <td class="text-center align-middle">
-                    <button id="delete-@athlete.Id" class="fake-link js-delete">Delete</button>
-                </td>
-            </tr>
+                <tr id="tr-@athlete.Id">
+                    <td class="text-center align-middle">@Html.ActionLink($"{athlete.Id}", "Edit", "Athletes", new { id = athlete.Id })</td>
+                    <td class="text-center align-middle">@Html.ActionLink(athlete.Name, "Edit", "Athletes", new { id = athlete.Id })</td>
+                    <td class="text-center align-middle">@Html.ActionLink(athlete.Surname, "Edit", "Athletes", new { id = athlete.Id })</td>
+                    <td class="text-center align-middle">@athlete.Country.Name</td>
+                    <td class="align-middle">
+                        <ul class="m-0">
+                            @for (int i = 0; i < athlete.Sports.Count; i++)
+                            {
+                                int sportId = athlete.Sports.ElementAt(i).Key;
+                                <li>@Model.Sports.Single(s => s.Id == sportId).Name</li>
+                            }
+                        </ul>
+                    </td>
+                    <td class="text-center align-middle">
+                        <button id="delete-@athlete.Id" class="fake-link js-delete">Delete</button>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -68,5 +105,7 @@ else
                 }
             });
         });
+
+
     </script>
 }
