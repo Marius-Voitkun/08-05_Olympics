@@ -33,7 +33,7 @@ namespace _08_05_Olympics.Services
                                                         : "";
 
             string query = @$"
-SELECT a.Id, a.Name, a.Surname, a.CountryId
+SELECT a.Id, a.Name, a.Surname, a.CountryId, c.Name AS Country
 FROM dbo.Athletes a
 JOIN dbo.Countries c ON a.CountryId = c.Id
 WHERE {queryFragmentForFilteringByCountry} a.Id IN (
