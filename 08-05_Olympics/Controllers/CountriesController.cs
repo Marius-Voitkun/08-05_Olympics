@@ -60,18 +60,10 @@ namespace _08_05_Olympics.Controllers
         public IActionResult Delete(int id)
         {
             if (!_dbService.DeleteCountry(id))
-                return RedirectToAction("AfterDelete", "Countries", new { message = "The country could not be deleted." });
+                return Json(new { redirectToUrl = Url.Action("Index", new { message = "The country could not be deleted." }) });
+                //return RedirectToAction("AfterDelete", "Countries", new { message = "The country could not be deleted." }); - does not work as intended...
 
-            return RedirectToAction("AfterDelete");
-        }
-
-        public IActionResult AfterDelete(string message = "")
-        {
-            List<CountryModel> countries = _dbService.GetCountries();
-
-            ViewData["Message"] = message;
-
-            return View("Create");
+            return Json(new { redirectToUrl = Url.Action("Index") });
         }
     }
 }

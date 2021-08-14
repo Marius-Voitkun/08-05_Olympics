@@ -56,9 +56,12 @@ else
                     $.ajax({
                         type: "DELETE",
                         url: 'Countries/Delete',
-                        data: { id: id }
+                        data: { id: id },
+                        success: function (response) {
+                            window.location.href = response.redirectToUrl;
+                        }
                     });
-
+                    
                     //document.getElementById(`tr-${id}`).innerHTML = '';
                 }
             });
