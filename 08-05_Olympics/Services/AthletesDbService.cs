@@ -1,5 +1,7 @@
 ﻿using _08_05_Olympics.Models;
+using Dapper;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -44,6 +46,11 @@ WHERE {queryFragmentForFilteringByCountry} a.Id IN (
 	    )
 {queryFragmentForSorting}";
 
+
+            //using (_connection)
+            //{
+            //    athletes = _connection.Query<AthleteModel>(query).ToList();
+            //}
 
             _connection.Open();
 

@@ -9,30 +9,43 @@
 
 @using (Html.BeginForm("SortedFilteredIndex", "Athletes", FormMethod.Post))
 {
-    <div class="form-group">
-        @Html.LabelFor(m => m.SortFilter.SortBy, "Sort athletes by: ")
-        @Html.DropDownListFor(m => m.SortFilter.SortBy, new SelectList(Model.SortFilter.SortProperties), "", new { @class = "form-control" })
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SortFilter.FilterBySport, "Show only athletes that attend the following sport: ")
+                    @Html.DropDownListFor(m => m.SortFilter.FilterBySport, new SelectList(Model.Sports.Select(s => s.Name)), "", new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.DropDownListFor(m => m.SortFilter.FilterByTeamActivity,
+                                          new SelectList(
+                                                      new Dictionary<int, string> { { 0, "No filtering by team/non-team activities" },
+                                                                                    { 1, "Select only athletes who attend team activities" },
+                                                                                    { 2, "Select only athletes who attend non-team activities" } },
+                                                      "Key",
+                                                      "Value"),
+                                          null,
+                                          new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SortFilter.FilterByCountry, "Filter athletes by country: ")
+                    @Html.DropDownListFor(m => m.SortFilter.FilterByCountry, new SelectList(Model.Countries.Select(c => c.Name)), "", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SortFilter.SortBy, "Sort athletes by: ")
+                    @Html.DropDownListFor(m => m.SortFilter.SortBy, new SelectList(Model.SortFilter.SortProperties), "", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2 mb-5">Sort and filter</button>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.SortFilter.FilterByCountry, "Filter athletes by country: ")
-        @Html.DropDownListFor(m => m.SortFilter.FilterByCountry, new SelectList(Model.Countries.Select(c => c.Name)), "", new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.SortFilter.FilterBySport, "Show only athletes that attend the following sport: ")
-        @Html.DropDownListFor(m => m.SortFilter.FilterBySport, new SelectList(Model.Sports.Select(s => s.Name)), "", new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.DropDownListFor(m => m.SortFilter.FilterByTeamActivity,
-                              new SelectList(
-                                          new Dictionary<int, string> { { 0, "No filtering by team/non-team activities" },
-                                                                        { 1, "Select only athletes who attend team activities" },
-                                                                        { 2, "Select only athletes who attend non-team activities" } },
-                                          "Key",
-                                          "Value"),
-                              null,
-                              new { @class = "form-control" })
-    </div>
-    <button type="submit" class="btn btn-primary mb-5">Sort and filter</button>
+    
 }
 
 @if (Model.Athletes.Count == 0)

@@ -17,3 +17,11 @@ athleteId = Convert.ToInt32(reader.GetDecimal(0));
  _connection.Close();
 return athleteId;
 }
+
+==================================================================================================================================
+SortFilterModel
+
+public string FilerCountry { get; set; } // 0 || lithuania || estija yra saliu dropdownas
+public string FilerSport { get; set; } // 0 || basketball || swimming yra sporto dropdownas
+public string FilerActivity { get; set; } // -1 || 0 || 1 teamactivity dropdownas "pasirinkti actiitivy tipa"(-1), "not team"(0), "team" (1)
+public string Sort { get; set; } // name || surname || sport || country dropdownas
