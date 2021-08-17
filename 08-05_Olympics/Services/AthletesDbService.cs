@@ -80,7 +80,7 @@ WHERE {queryFragmentForFilteringByCountry} a.Id IN (
             if (model.FilterByTeamActivity == 1)
                 return "(1)";
 
-            if (model.FilterByTeamActivity == 2)
+            if (model.FilterByTeamActivity == 0)
                 return "(0)";
 
             return "(0, 1)";

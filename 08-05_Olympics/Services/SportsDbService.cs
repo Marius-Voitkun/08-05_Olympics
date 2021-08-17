@@ -50,6 +50,32 @@ namespace _08_05_Olympics.Services
             ExecuteSqlQuery(query);
         }
 
+        public void UpdateSport(SportModel sport)
+        {
+            string query = $@"UPDATE dbo.Sports
+                              SET Name = '{sport.Name}', TeamActivity = '{sport.TeamActivity}'
+                              WHERE Id = {sport.Id};";
+
+            ExecuteSqlQuery(query);
+        }
+
+        public bool DeleteSport(int id)
+        {
+            string query = $@"DELETE FROM dbo.Sports
+                              WHERE Id = '{id}';";
+
+            try
+            {
+                ExecuteSqlQuery(query);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private void ExecuteSqlQuery(string query)
         {
             _connection.Open();

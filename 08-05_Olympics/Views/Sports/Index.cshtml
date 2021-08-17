@@ -13,23 +13,58 @@
 }
 else
 {
-    <table class="table table-bordered table-hover">
+    <table id="sports" class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="text-center">Id</th>
-                <th class="text-center">Name</th>
-                <th class="text-center">Team Activity</th>
+                <th class="text-center align-middle">Id</th>
+                <th class="text-center align-middle">Name</th>
+                <th class="text-center align-middle">Team Activity</th>
+                <th class="text-center align-middle"></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var sport in Model)
             {
                 <tr>
-                    <td class="text-center">@sport.Id</td>
-                    <td class="text-center">@sport.Name</td>
-                    <td class="text-center">@{ var value = sport.TeamActivity ? "Yes" : "No"; }@value</td>
+                    <td class="text-center align-middle">@sport.Id</td>
+                    <td class="text-center align-middle">@Html.ActionLink($"{sport.Name}", "Edit", "Sports", new { id = sport.Id })</td>
+                    <td class="text-center align-middle">@{ var value = sport.TeamActivity ? "Yes" : "No"; }@value</td>
+                    <td class="text-center align-middle">
+                        <button id="delete-@sport.Id" class="fake-link js-delete">Delete</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+@if ((string)ViewData["Message"] != "")
+{
+    <script>
+        alert("@ViewData["Message"]");
+    </script>
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#sports .js-delete").on("click", function () {
+                let id = this.id.split('-')[1];
+
+                if (confirm("Are you sure you want to delete this sport?")) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: 'Sports/Delete',
+                        data: { id: id },
+                        success: function (response) {
+                            window.location.href = response.redirectToUrl;
+                        }
+                    });
+
+                    //document.getElementById(`tr-${id}`).innerHTML = '';
+                }
+            });
+        });
+    </script>
 }

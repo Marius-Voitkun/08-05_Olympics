@@ -17,9 +17,11 @@ namespace _08_05_Olympics.Controllers
             _dbService = dbService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string message = "")
         {
             List<SportModel> sports = _dbService.GetSports();
+
+            ViewData["Message"] = message;
 
             return View(sports);
         }
@@ -37,6 +39,32 @@ namespace _08_05_Olympics.Controllers
             _dbService.AddSport(sport);
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            SportModel sport = _dbService.GetSports().SingleOrDefault(s => s.Id == id);
+
+            if (sport == null)
+                return NotFound();
+
+            return View(sport);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(SportModel sport)
+        {
+            _dbService.UpdateSport(sport);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            if (!_dbService.DeleteSport(id))
+                return Json(new { redirectToUrl = Url.Action("Index", new { message = "The sport could not be deleted." }) });
+
+            return Json(new { redirectToUrl = Url.Action("Index") });
         }
     }
 }

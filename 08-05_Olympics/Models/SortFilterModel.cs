@@ -11,7 +11,7 @@ namespace _08_05_Olympics.Models
         public List<string> SortProperties { get; set; } = new() { "Name", "Surname", "Country" };
         public string FilterByCountry { get; set; }
         public string FilterBySport { get; set; }
-        public int FilterByTeamActivity { get; set; }
+        public int? FilterByTeamActivity { get; set; }
 
     }
 }

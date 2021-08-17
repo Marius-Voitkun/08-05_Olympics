@@ -1,16 +1,15 @@
 ﻿@model SportModel
 @{
-    ViewData["Title"] = "Add a Sport";
+    ViewData["Title"] = "Edit Sport";
 }
 
-<h2>Add a sport</h2>
+<h2>Edit sport</h2>
 
-@using (Html.BeginForm("Create", "Sports", FormMethod.Post))
+@using (Html.BeginForm("Edit", "Sports", FormMethod.Post))
 {
     <div class="form-group">
         @Html.LabelFor(s => s.Name, "Name of sport")
         @Html.TextBoxFor(s => s.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(s => s.Name)
     </div>
     <div class="checkbox mb-3">
         <label>
@@ -18,6 +17,6 @@
         </label>
     </div>
     @Html.HiddenFor(s => s.Id)
-    <button type="submit" class="btn btn-primary">Add</button>
+    <button type="submit" class="btn btn-primary">Save changes</button>
     @Html.ActionLink("Cancel", "Index", "Sports", null, new { @class = "btn btn-secondary" })
 } 

@@ -1,6 +1,13 @@
 ﻿@model _08_05_Olympics.Models.ViewModels.IntegratedViewModel
 @{
     ViewData["Title"] = "Athletes";
+    
+    List<SelectListItem> itemsForFilteringByTeamActivity = new()
+    {
+        new SelectListItem { Value = "2", Text = "No filtering by team/non-team activities" },
+        new SelectListItem { Value = "1", Text = "Select only athletes who attend team activities" },
+        new SelectListItem { Value = "0", Text = "Select only athletes who attend non-team activities" }
+    };
 }
 
 <h2 class="d-inline-block mb-4">Athletes</h2>
@@ -18,12 +25,7 @@
                 </div>
                 <div class="form-group">
                     @Html.DropDownListFor(m => m.SortFilter.FilterByTeamActivity,
-                                          new SelectList(
-                                                      new Dictionary<int, string> { { 0, "No filtering by team/non-team activities" },
-                                                                                    { 1, "Select only athletes who attend team activities" },
-                                                                                    { 2, "Select only athletes who attend non-team activities" } },
-                                                      "Key",
-                                                      "Value"),
+                                          new SelectList(itemsForFilteringByTeamActivity, "Value", "Text", "2"),
                                           null,
                                           new { @class = "form-control" })
                 </div>

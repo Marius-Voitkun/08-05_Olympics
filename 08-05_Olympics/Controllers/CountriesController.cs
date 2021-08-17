@@ -61,7 +61,7 @@ namespace _08_05_Olympics.Controllers
         {
             if (!_dbService.DeleteCountry(id))
                 return Json(new { redirectToUrl = Url.Action("Index", new { message = "The country could not be deleted." }) });
-                //return RedirectToAction("AfterDelete", "Countries", new { message = "The country could not be deleted." }); - does not work as intended...
+                //return RedirectToAction("Index", new { message = "The country could not be deleted." }); - does not work as intended...
 
             return Json(new { redirectToUrl = Url.Action("Index") });
         }
